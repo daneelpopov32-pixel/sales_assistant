@@ -1,0 +1,26 @@
+﻿# Сырые данные (>100 МБ) — исключаем полностью
+data/raw/
+*.csv
+*.xlsx
+*.zip
+*.tar.gz
+*.parquet
+
+# Секреты
+.env
+*.pem
+*.key
+*.secret
+
+# Зависимости и сборка
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+
+# IDE и системные
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
