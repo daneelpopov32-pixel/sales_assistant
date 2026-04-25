@@ -4,50 +4,31 @@ node_modules/
 
 # Build artifacts
 dist/
-build/
-target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.eggs/
-.egg-info/
-*.egg-info/
-
-# Logs
-*.log
 
 # Environment variables
 .env
 .env.local
-.env.*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Deployment keys
+deploy_key
+deploy_key.pub
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
+# Logs
+*.log
 
 # Temporary files
 *.tmp
-*.temp
+*.swp
 
-# Compressed files
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Archives
 *.zip
 *.gz
 *.tar
@@ -71,23 +52,4 @@ htmlcov/
 *.tar.xz
 *.tar.zst
 
-# MyPy
-.mypy_cache/
-__pycache__/
-
-# Pytest
-.pytest_cache/
-
-# Gradle
-.gradle/
-
-# Compiled files
-*.class
-*.o
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
 ```

@@ -4,7 +4,6 @@ import { config } from './config';
 import logger from './tools/logger';
 import { SupportAgent } from './agents/supportAgent';
 import { WebhookRequest, WebhookResponse } from './types';
-import { startTelegramBot } from './telegram/bot';
 
 const app = express();
 const agent = new SupportAgent();
@@ -48,6 +47,3 @@ app.listen(config.port, () => {
   logger.info(`   Health check: http://localhost:${config.port}/health`);
   logger.info(`   Webhook: http://localhost:${config.port}/webhook/max`);
 });
-
-// Запускаем Telegram бота
-startTelegramBot();
