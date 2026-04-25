@@ -157,6 +157,63 @@ export class SupportAgent {
     return msg.trim();
   }
 
+  // ➕ Метод для ответа на запрос о количестве заказов по контакту
+  private handleOrderCountQuery(userMessage: string, state: SupportState): string | null {
+    // Проверяем запросы типа "сколько заказов", "сколько всего заказов", "количество заказов"
+    const orderCountPatterns = [
+      /сколько.*заказов/i,
+      /сколько.*сделал.*заказов/i,
+      /сколько.*заказ/i,
+      /количество.*заказов/i,
+      /всего.*заказов/i,
+      /сколько.*покупал/i,
+      /сколько.*покупал.*раз/i,
+    ];
+
+    const hasOrderCountQuery = orderCountPatterns.some(pattern => pattern.test(userMessage));
+    
+    if (!hasOrderCountQuery) return null;
+
+    // Ищем email или телефон в сообщении
+    const emailMatch = userMessage.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i);
+    const phoneMatch = userMessage.match(/[\+]?[\d\-\(\)\s]{10,}/);
+
+    let contact: string | null = null;
+    let contactType: string = '';
+
+    if (emailMatch) {
+      contact = emailMatch[0];
+      contactType = 'email';
+    } else if (phoneMatch) {
+      contact = phoneMatch[0];
+      contactType = 'phone';
+    }
+
+    // Если контакт не указан в сообщении, используем сохранённый
+    if (!contact && state.clientEmail) {
+      contact = state.clientEmail;
+      contactType = 'email';
+    } else if (!contact && state.clientPhone) {
+      contact = state.clientPhone;
+      contactType = 'phone';
+    }
+
+    if (!contact) {
+      return `Чтобы проверить количество заказов, укажите email или номер телефона.`;
+    }
+
+    const orderCount = this.orderDb.getOrderCountByContact(contact);
+    const totalSpent = this.orderDb.getTotalSpentByContact(contact);
+    const customer = this.orderDb.findCustomerByContact(contact);
+
+    if (orderCount === 0) {
+      return `По контакту "${contact}" заказов не найдено.`;
+    }
+
+    const customerName = customer ? customer.first_name : 'Клиент';
+    return `${customerName}, по контакту "${contact}" найдено заказов: ${orderCount}. Общая сумма: ${totalSpent.toLocaleString('ru-RU')} руб.`;
+  }
+
   private handleOrderQuery(userMessage: string, state: SupportState): string | null {
     // 1. Поиск по полному UUID заказа
     const uuidMatch = userMessage.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
@@ -366,7 +423,7 @@ ${examples.map(ex => `Клиент: ${ex.instruction_ru}\nАгент: ${ex.respo
         return greeting;
       }
 
-      // 🔍 БЛОК: Обработка ввода контакта клиента (ДОБАВЛЕНО)
+      // 🔍 БЛОК: Обработка ввода контакта клиента
       // Если ждём контакт от клиента
       if (state.awaitingContact) {
         const customer = this.orderDb.findCustomerByContact(userMessage);
@@ -375,25 +432,26 @@ ${examples.map(ex => `Клиент: ${ex.instruction_ru}\nАгент: ${ex.respo
           state.clientName = customer.first_name;
           state.clientId = customer.customer_id;
           state.clientEmail = customer.email;
-          state.clientPhone = customer.phone_number; // ← ИСПРАВЛЕНО: phone → phone_number
+          state.clientPhone = customer.phone_number;
           state.awaitingContact = false;
 
-          const response = this.orderDb.formatCustomerStats(customer, customer.customer_id);
+          // Обращаемся по имени и спрашиваем о вопросе
+          const response = `${customer.first_name}, какой у вас вопрос?`;
           state.history.push({ role: 'assistant', content: response, timestamp: new Date() });
           sessions.set(sessionId, state);
           return response;
         } else {
-          const response = `Не нашёл вас по этим данным. Попробуйте указать email или номер телефона ещё раз, или напишите ваш вопрос — я постараюсь помочь.`;
+          const response = `Не нашёл вас по этим данным. Попробуйте указать email или номер телефона ещё раз.`;
           state.history.push({ role: 'assistant', content: response, timestamp: new Date() });
           sessions.set(sessionId, state);
           return response;
         }
       }
 
-      // Если имя не известно — просим контакт (ДОБАВЛЕНО)
+      // Если имя не известно — просим контакт
       if (!state.clientName && !state.awaitingContact && userMessage !== '/start') {
         state.awaitingContact = true;
-        const response = `Здравствуйте! Уточните ваш номер телефона или email — я найду вас среди клиентов и смогу помочь быстрее.`;
+        const response = `Здравствуйте! Уточните ваш номер телефона, или почту чтобы я нашел вас среди клиентов`;
         state.history.push({ role: 'user', content: userMessage, timestamp: new Date() });
         state.history.push({ role: 'assistant', content: response, timestamp: new Date() });
         sessions.set(sessionId, state);
@@ -404,6 +462,15 @@ ${examples.map(ex => `Клиент: ${ex.instruction_ru}\nАгент: ${ex.respo
       // Основная обработка сообщения (после идентификации клиента)
       state.history.push({ role: 'user', content: userMessage, timestamp: new Date() });
       
+      // Сначала проверяем запросы о количестве заказов
+      const orderCountResponse = this.handleOrderCountQuery(userMessage, state);
+      if (orderCountResponse) {
+        state.history.push({ role: 'assistant', content: orderCountResponse, timestamp: new Date() });
+        sessions.set(sessionId, state);
+        return orderCountResponse;
+      }
+      
+      // Затем проверяем обычные запросы по заказам
       const orderResponse = this.handleOrderQuery(userMessage, state);
       if (orderResponse) {
         state.history.push({ role: 'assistant', content: orderResponse, timestamp: new Date() });

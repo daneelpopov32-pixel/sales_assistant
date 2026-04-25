@@ -1,0 +1,52 @@
+[
+  {
+    "order_id": "550e8400-e29b-41d4-a716-446655440001",
+    "customer_id": "c001",
+    "product_id": "p101",
+    "order_amount": "5000.00",
+    "order_date": "2024-01-15T10:30:00Z",
+    "payment_method": "card",
+    "status": "success",
+    "quantity": "2"
+  },
+  {
+    "order_id": "550e8400-e29b-41d4-a716-446655440002",
+    "customer_id": "c001",
+    "product_id": "p102",
+    "order_amount": "3500.00",
+    "order_date": "2024-02-20T14:45:00Z",
+    "payment_method": "sbp",
+    "status": "success",
+    "quantity": "1"
+  },
+  {
+    "order_id": "550e8400-e29b-41d4-a716-446655440003",
+    "customer_id": "c002",
+    "product_id": "p103",
+    "order_amount": "12000.00",
+    "order_date": "2024-01-25T09:15:00Z",
+    "payment_method": "card",
+    "status": "refunded",
+    "quantity": "3"
+  },
+  {
+    "order_id": "550e8400-e29b-41d4-a716-446655440004",
+    "customer_id": "c002",
+    "product_id": "p104",
+    "order_amount": "8500.00",
+    "order_date": "2024-03-10T16:20:00Z",
+    "payment_method": "wallet",
+    "status": "success",
+    "quantity": "1"
+  },
+  {
+    "order_id": "550e8400-e29b-41d4-a716-446655440005",
+    "customer_id": "c003",
+    "product_id": "p105",
+    "order_amount": "2500.00",
+    "order_date": "2024-02-05T11:00:00Z",
+    "payment_method": "card",
+    "status": "failed",
+    "quantity": "1"
+  }
+]

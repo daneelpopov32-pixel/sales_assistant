@@ -88,6 +88,22 @@ export class OrderDatabase {
     );
   }
 
+  // ➕ Новый метод: получить количество заказов по контакту (email или телефон)
+  public getOrderCountByContact(contact: string): number {
+    const customer = this.findCustomerByContact(contact);
+    if (!customer) return 0;
+    const orders = this.getOrdersByCustomerId(customer.customer_id);
+    return orders.length;
+  }
+
+  // ➕ Новый метод: получить общую сумму заказов по контакту
+  public getTotalSpentByContact(contact: string): number {
+    const customer = this.findCustomerByContact(contact);
+    if (!customer) return 0;
+    const orders = this.getOrdersByCustomerId(customer.customer_id);
+    return orders.reduce((sum, o) => sum + parseFloat(o.order_amount || '0'), 0);
+  }
+
   public getCustomerStats(customerId: string): {
     totalOrders: number;
     totalSpent: number;

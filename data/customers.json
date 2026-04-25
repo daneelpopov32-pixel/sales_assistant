@@ -1,0 +1,44 @@
+[
+  {
+    "customer_id": "c001",
+    "first_name": "Иван",
+    "last_name": "Петров",
+    "email": "ivan.petrov@example.com",
+    "phone_number": "+79991234567",
+    "gender": "M",
+    "dob": "1985-05-15",
+    "signup_date": "2023-01-10",
+    "address": "ул. Ленина 10",
+    "city": "Москва",
+    "state": "Московская область",
+    "country": "Россия"
+  },
+  {
+    "customer_id": "c002",
+    "first_name": "Мария",
+    "last_name": "Сидорова",
+    "email": "maria.sidorova@example.com",
+    "phone_number": "+79997654321",
+    "gender": "F",
+    "dob": "1990-08-22",
+    "signup_date": "2023-02-15",
+    "address": "пр. Мира 25",
+    "city": "Санкт-Петербург",
+    "state": "Ленинградская область",
+    "country": "Россия"
+  },
+  {
+    "customer_id": "c003",
+    "first_name": "Алексей",
+    "last_name": "Смирнов",
+    "email": "alexey.smirnov@example.com",
+    "phone_number": "+79991112233",
+    "gender": "M",
+    "dob": "1988-12-01",
+    "signup_date": "2023-03-20",
+    "address": "ул. Гагарина 5",
+    "city": "Казань",
+    "state": "Республика Татарстан",
+    "country": "Россия"
+  }
+]
